@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABROVIA | University Finder</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f1f5f9;
+            color: #172554;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 25px;
+        }
+
+        .search-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #00000010;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 16px;
+        }
+
+        button {
+            background: #174ea6;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .results {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .university-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        .university-card h3 {
+            color: #174ea6;
+        }
+
+        #message {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>ABROVIA</h2>
+    <a href="index.html">Back to Home</a>
+</header>
+
+<div class="container">
+
+    <h1>University Finder</h1>
+    <p>Find universities according to your preferred country and course.</p>
+
+    <div class="search-box">
+
+        <h2>Search Universities</h2>
+
+        <label for="country">Select Country</label>
+        <select id="country">
+            <option value="">Choose Country</option>
+            <option value="Australia">Australia</option>
+            <option value="New Zealand">New Zealand</option>
+            <option value="Canada">Canada</option>
+            <option value="United Kingdom">United Kingdom</option>
+        </select>
+
+        <label for="course">Select Course</label>
+        <select id="course">
+            <option value="">Choose Course</option>
+            <option value="IT">Information Technology</option>
+            <option value="Business">Business</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Computer Science">Computer Science</option>
+        </select>
+
+        <button onclick="searchUniversities()">Search Universities</button>
+
+    </div>
+
+    <p id="message"></p>
+
+    <div class="results" id="results"></div>
+
+</div>
+
+<script>
+    const universities = [
+        { name: "University of Melbourne", country: "Australia", courses: ["IT", "Business", "Engineering", "Computer Science"], city: "Melbourne" },
+        { name: "University of Sydney", country: "Australia", courses: ["IT", "Business", "Engineering", "Computer Science"], city: "Sydney" },
+        { name: "Monash University", country: "Australia", courses: ["IT", "Business", "Engineering", "Computer Science"], city: "Melbourne" },
+
+        { name: "University of Auckland", country: "New Zealand", courses: ["IT", "Business", "Engineering", "Computer Science"], city: "Auckland" },
+        { name: "Massey University", country: "New Zealand", courses: ["IT", "Business", "Computer Science"], city: "Palmerston North" },
+        { name: "University of Canterbury", country: "New Zealand", courses: ["IT", "Engineering", "Computer Science"], city: "Christchurch" },
+
+        { name: "University of Toronto", country: "Canada", courses: ["IT", "Business", "Engineering", "Computer Science"], city: "Toronto" },
+        { name: "University of Waterloo", country: "Canada", courses: ["IT", "Engineering", "Computer Science"], city: "Waterloo" },
+
+        { name: "University of Oxford", country: "United Kingdom", courses: ["Business", "Engineering", "Computer Science"], city: "Oxford" },
+        { name: "University of Manchester", country: "United Kingdom", courses: ["IT", "Business", "Engineering", "Computer Science"], city: "Manchester" }
+    ];
+
+    function searchUniversities() {
+
+        const country = document.getElementById("country").value;
+        const course = document.getElementById("course").value;
+
+        const results = document.getElementById("results");
+        const message = document.getElementById("message");
+
+        results.innerHTML = "";
+        message.textContent = "";
+
+        if (country === "" || course === "") {
+            message.textContent = "Please select both country and course.";
+            return;
+        }
+
+        const filtered = universities.filter(function(university) {
+            return university.country === country &&
+                   university.courses.includes(course);
+        });
+
+        if (filtered.length === 0) {
+            message.textContent = "No matching universities found.";
+            return;
+        }
+
+        message.textContent = filtered.length + " universities found.";
+
+        filtered.forEach(function(university) {
+
+            const card = document.createElement("div");
+            card.className = "university-card";
+
+            const name = document.createElement("h3");
+            name.textContent = university.name;
+
+            const city = document.createElement("p");
+            city.textContent = "Location: " + university.city;
+
+            const countryName = document.createElement("p");
+            countryName.textContent = "Country: " + university.country;
+
+            card.appendChild(name);
+            card.appendChild(city);
+            card.appendChild(countryName);
+
+            results.appendChild(card);
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABROVIA | Admin Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #dbeafe, #172554);
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 14px;
+            box-shadow: 0 5px 25px #00000030;
+            text-align: center;
+        }
+
+        h1 {
+            color: #174ea6;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin: 12px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 7px;
+            background: #174ea6;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #123b7a;
+        }
+
+        #message {
+            color: red;
+            margin-top: 15px;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #174ea6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+
+        <h1>ABROVIA</h1>
+        <h3>Admin Login</h3>
+
+        <form id="loginForm">
+
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter Username"
+                required
+            >
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter Password"
+                required
+            >
+
+            <button type="submit">Login</button>
+
+        </form>
+
+        <p id="message"></p>
+
+        <a href="index.html">Back to Home</a>
+
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener(
+            "submit", function(event) {
+
+                event.preventDefault();
+
+                const username =
+                    document.getElementById("username").value;
+
+                const password =
+                    document.getElementById("password").value;
+
+                if (username === "admin" && password === "admin123") {
+
+                    sessionStorage.setItem("adminLoggedIn", "true");
+
+                    sessionStorage.setItem("userLoggedIn", "true");
+                    window.location.href = "index.html";
+
+                } else {
+
+                    document.getElementById("message").textContent =
+                        "Invalid username or password!";
+                }
+            }
+        );
+    </script>
+
+</body>
+</html>

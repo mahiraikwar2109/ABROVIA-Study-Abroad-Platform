@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABROVIA | Admin Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #172554;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .container {
+            padding: 40px 7%;
+        }
+
+        .container h1 {
+            margin-bottom: 10px;
+        }
+
+        .summary {
+            background: white;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        .summary h2 {
+            color: #174ea6;
+            font-size: 35px;
+            margin-top: 10px;
+        }
+
+        .table-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #dbeafe;
+        }
+
+        button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #991b1b;
+        }
+
+        .empty {
+            padding: 25px;
+            color: #64748b;
+            text-align: center;
+        }
+
+        #statusMessage {
+            margin-top: 15px;
+            color: #174ea6;
+        }
+
+        @media(max-width: 700px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>ABROVIA ADMIN</h2>
+
+    <div>
+        <a href="index.html">← Back to Website</a>
+        <button onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <h1>Admin Dashboard</h1>
+    <p>Manage student study-abroad enquiries.</p>
+
+    <div class="summary">
+        <p>Total Student Enquiries</p>
+        <h2 id="totalEnquiries">0</h2>
+    </div>
+
+    <div class="table-box">
+        <h2>Student Enquiry Records</h2>
+
+        <p id="statusMessage">Loading enquiries...</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Country</th>
+                    <th>Course</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="enquiryList"></tbody>
+        </table>
+
+        <p id="emptyMessage" class="empty"></p>
+    </div>
+
+</div>
+
+<script>
+    const API_URL = "http://localhost:8080/api/enquiries";
+
+    async function displayEnquiries() {
+
+        const list = document.getElementById("enquiryList");
+        const emptyMessage = document.getElementById("emptyMessage");
+        const statusMessage = document.getElementById("statusMessage");
+
+        list.innerHTML = "";
+        emptyMessage.textContent = "";
+        statusMessage.textContent = "Loading enquiries...";
+
+        try {
+            const response = await fetch(API_URL);
+
+            if (!response.ok) {
+                throw new Error("Could not load enquiries");
+            }
+
+            const enquiries = await response.json();
+
+            document.getElementById("totalEnquiries").textContent =
+                enquiries.length;
+
+            statusMessage.textContent = "";
+
+            if (enquiries.length === 0) {
+                emptyMessage.textContent = "No student enquiries found.";
+                return;
+            }
+
+            enquiries.forEach(function(enquiry) {
+
+                const row = document.createElement("tr");
+
+                const details = [
+                    enquiry.id,
+                    enquiry.studentName,
+                    enquiry.email,
+                    enquiry.country,
+                    enquiry.course,
+                    "—"
+                ];
+
+                details.forEach(function(value) {
+                    const cell = document.createElement("td");
+                    cell.textContent = value ?? "";
+                    row.appendChild(cell);
+                });
+
+                const actionCell = document.createElement("td");
+                const deleteButton = document.createElement("button");
+
+                deleteButton.textContent = "Delete";
+
+                deleteButton.onclick = function() {
+                    deleteEnquiry(enquiry.id);
+                };
+
+                actionCell.appendChild(deleteButton);
+                row.appendChild(actionCell);
+
+                list.appendChild(row);
+            });
+
+        } catch (error) {
+            statusMessage.textContent =
+                "Unable to connect to Java backend. Please start the server.";
+
+            console.error(error);
+        }
+    }
+
+    async function deleteEnquiry(id) {
+
+        if (!confirm("Are you sure you want to delete this enquiry?")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(API_URL + "/" + id, {
+                method: "DELETE"
+            });
+
+            if (!response.ok) {
+                throw new Error("Delete failed");
+            }
+
+            alert("Enquiry deleted successfully!");
+            displayEnquiries();
+
+        } catch (error) {
+            alert("Unable to delete enquiry.");
+            console.error(error);
+        }
+    }
+
+    function logout() {
+        sessionStorage.removeItem("adminLoggedIn");
+        sessionStorage.removeItem("userLoggedIn");
+        window.location.href = "login.html";
+    }
+
+    displayEnquiries();
+</script>
+
+</body>
+</html>
