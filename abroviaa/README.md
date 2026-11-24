@@ -38,6 +38,11 @@ ABROVIA is a web-based study abroad consultancy platform that helps students exp
 
 4. Backend runs at http://localhost:8080
 
+### Links
+Live website: https://abrovia-website.onrender.com/
+Backend health: https://abrovia-study-abroad-platform.onrender.com/api/hello
+GitHub source: https://github.com/mahiraikwar2109/ABROVIA-Study-Abroad-Platform
+
 ### Frontend
 1. Open the frontend folder in VS Code.
 2. Run index.html using Live Server.
